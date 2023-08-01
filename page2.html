@@ -46,6 +46,25 @@
           CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES Project (project_id),
           CONSTRAINT chk_assignment_duration CHECK (assignment_end_date >= DATEADD(DAY, 5, assignment_start_date))
         );
+
+        SELECT
+  d.developer_id,
+  d.first_name,
+  d.last_name,
+  p.project_id,
+  p.project_name,
+  SUM(DATEDIFF(DAY, dp.assignment_start_date, dp.assignment_end_date) + 1) AS days_worked
+FROM
+  Developer_Project dp
+JOIN
+  Developer d ON dp.developer_id = d.developer_id
+JOIN
+  Project p ON dp.project_id = p.project_id
+GROUP BY
+  d.developer_id, d.first_name, d.last_name, p.project_id, p.project_name
+ORDER BY
+  d.developer_id, p.project_id;
+
       </pre>
     </main>
   </body>
